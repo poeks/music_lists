@@ -1,4 +1,6 @@
 require './env'
+require 'csv'
 
-thing = Getter.new
-thing.get_all_genres
+getter = Getter.new
+things = getter.get_all_genres
+getter.write_csv things
