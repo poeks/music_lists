@@ -17,9 +17,11 @@ class Getter
   end
 
   def get_all_genres
+    all = []
     CONFIG["genres"].each do |genre|
-      puts get_genre genre
+      all.concat get_genre(genre)
     end
+    all
   end
 
   def get_genre genre
@@ -37,9 +39,23 @@ class Getter
     path = "//div[contains(@class,'album-highlight')]/a"
     hrefs = @doc.xpath path
     hrefs.collect {|node| 
-      artist, album = node.attributes["title"].text.split "-"
-      "#{get_genre_name genre},#{artist.strip},#{album.strip}"
+      title = node.attributes["title"].text
+      if title =~ /([^-]+) - (.+)/
+        [$1.strip.chomp, $2.strip.chomp, get_genre_name(genre).chomp]
+      else
+        puts "Couldn't parse #{title}"
+      end
     }
+  end
+
+  def write_csv things
+    CSV.open("all_music.csv", "w") do |csv|
+      csv << ["Genre","Artist","Album"]
+      things.each do |thing|
+        puts thing
+        csv << thing
+      end
+    end
   end
 
 end
