@@ -14,15 +14,14 @@ ks.fetch path, xpath do |stuff|
   if stuff.attributes["class"] and stuff.attributes["class"].value == 'aat'
     a = stuff.children.first.text
     if a.class==Nokogiri::XML::Element and a.name == "a"
-      current_artist = a.children.first
+      current_artist = "Childartist:#{a.children.first}"
     else
-      current_artist = a
-      puts "Unknown #{a.class} #{stuff}"
+      current_artist = "Artist:#{a}"
     end
   end
 
   if stuff.attributes["class"] and stuff.attributes["class"].value == 'att'
-    current_album = stuff.children.first.text
+    current_album = "Album:#{stuff.children.first.text}"
   end
 #<td class="aat"><a href="/music/kzun10.htm">Michael Jackson</a></td>
 #<td class="att">Thriller</td>
@@ -54,6 +53,7 @@ ks.fetch path, xpath do |stuff|
       albums[album] = 1
     end
     count += 1
+    current_artist, current_album = "", ""
   else
     this_col += 1
   end
